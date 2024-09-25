@@ -94,20 +94,29 @@ class ItemController extends Controller
 
     public function search(Request $request)
     {
+        $categories = Category::all();
+
         $query = $request->input('query');
 
         $items = Item::where('title','LIKE',"%{$query}%")->get();
 
-        return view('item.index',compact('items'));
+        return view('item.index',compact('items','categories'));
     }
 
     public function searchDetail(Request $request)
     {
+        $categories = Category::all();
+
         $min = $request->input('min');
         $max = $request->input('max');
         $category = $request->input('category');
 
-        return $category;
+        $items = Item::where('price','>=',$min)
+                 ->where('price','<=',$max)
+                 ->where('category_id',$category)
+                 ->get();
+
+        return view('item.index',compact('items','categories'));
 
     }
 }
